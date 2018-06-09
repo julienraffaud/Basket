@@ -6,7 +6,6 @@ from time import time
 import math
 import seaborn as sns
 import copy
-import xgboost as xg
 
 
 def drift(array):
