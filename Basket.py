@@ -97,12 +97,16 @@ def least_squares_price(simulations,strike_percentage,r,Call=True):
             
         m[:,-2] = [x if np.maximum((x - strike)*c_p,0)>0 else 0 for x in m[:,-2]]
         adjusted = m[(m[:,-2]!=0),:]
+        
         X = adjusted[:,-2]
         Y = adjusted[:,-1]*np.exp(-r)
+        
         coeff = np.polyfit(X,Y,2)
+        
         m[:,-2] = [coeff[0]*x**2 + coeff[1]*x + coeff[2] 
                   if np.maximum((x - strike)*c_p,0)>0 else 0 for x in m[:,-2]]
         m[:,-2] = [x if x>0 else 0 for x in m[:,-2]]
+        
     paths =  paths[:,1:]
     
     for _ in range(len(paths)):
