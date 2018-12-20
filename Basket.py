@@ -10,6 +10,8 @@ import copy
 
 def drift(array):
     
+    "Compute risk-neutral drift vector of the multivariate sequence."
+    
     log = np.log(array.tail(252)).diff()
     mu =  np.mean(log)
     v = log.var()
@@ -20,17 +22,23 @@ def drift(array):
 
 def correlation_matrix(array):
     
+    "Compute correlation matrix."
+    
     return np.array(np.log(array.tail(252)).diff().corr())
 
 
 def std(array):
+    
+    "Compute the standard deviation vector."
     
     std = np.log(array.tail(252)).diff().std()*np.sqrt(252)
     
     return std.values
 
 
-def joint_dist(dtf):
+def plot_joint_dist(dtf):
+    
+    "Plot the joint distribution."
     
     sns.set()
     assets = dtf.columns
@@ -51,6 +59,8 @@ def joint_dist(dtf):
 
 def cholesky_simulation(assets,s1,r,sig,correlation_matrix,T,steps):
     
+    "Generate correlated paths using the Cholesky algorithm."
+    
     dt = T/steps
     cholesky = np.linalg.cholesky(correlation_matrix)
     z = np.random.randn(len(assets),steps+1)
@@ -62,6 +72,9 @@ def cholesky_simulation(assets,s1,r,sig,correlation_matrix,T,steps):
 
 
 def basket_path(assets,s1,r,sig,correlation_matrix,T,trials,steps):
+    
+    "Compute the basket paths as arithmetic averages of the simulated multivariate 
+    " sequences."
     
     paths = []
     for simulation in range(trials):
@@ -76,6 +89,9 @@ def basket_path(assets,s1,r,sig,correlation_matrix,T,trials,steps):
 
 
 def least_squares_price(simulations,strike_percentage,r,Call=True):
+    
+    "Algorithm to recursively regress price from expiry to today, obtaining an American Basket Option's
+    "value."
     
     strike = simulations[0][0]*strike_percentage
     
